@@ -1,4 +1,4 @@
-package practice.RxJava;
+package practice.RxJava.flowable;
 
 import io.reactivex.rxjava3.annotations.NonNull;
 import io.reactivex.rxjava3.core.BackpressureStrategy;
