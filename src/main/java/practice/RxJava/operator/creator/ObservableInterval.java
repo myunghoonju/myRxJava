@@ -1,4 +1,4 @@
-package practice.RxJava.operator;
+package practice.RxJava.operator.creator;
 
 import io.reactivex.rxjava3.core.Observable;
 
