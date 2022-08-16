@@ -1,4 +1,4 @@
-package practice.RxJava;
+package practice.RxJava.other;
 
 
 import io.reactivex.rxjava3.processors.PublishProcessor;

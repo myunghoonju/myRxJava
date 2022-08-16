@@ -4,7 +4,7 @@ import io.reactivex.rxjava3.core.BackpressureOverflowStrategy;
 import io.reactivex.rxjava3.core.Flowable;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 import lombok.extern.slf4j.Slf4j;
-import practice.RxJava.MTimeUtil;
+import practice.RxJava.other.MTimeUtil;
 
 import java.util.concurrent.TimeUnit;
 

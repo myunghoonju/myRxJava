@@ -1,4 +1,4 @@
-package practice.RxJava;
+package practice.RxJava.other;
 
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
