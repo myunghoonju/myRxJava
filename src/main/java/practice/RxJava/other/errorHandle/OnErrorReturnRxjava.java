@@ -1,4 +1,4 @@
-package practice.RxJava.other;
+package practice.RxJava.other.errorHandle;
 
 import io.reactivex.rxjava3.core.Observable;
 import lombok.extern.slf4j.Slf4j;
