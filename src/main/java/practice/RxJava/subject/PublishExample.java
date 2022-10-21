@@ -4,7 +4,7 @@ import io.reactivex.rxjava3.subjects.PublishSubject;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class PublishSubjExample {
+public class PublishExample {
 
     public static void main(String[] args) {
         PublishSubject<Integer> subj = PublishSubject.create();
