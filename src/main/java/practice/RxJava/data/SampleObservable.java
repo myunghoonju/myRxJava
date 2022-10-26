@@ -3,9 +3,6 @@ package practice.RxJava.data;
 import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 
-/**
- * This class provides data for a unit test.
- * */
 public class SampleObservable {
 
     public static Observable<CarMaker> getDuplicatedCarMakerStream() {
