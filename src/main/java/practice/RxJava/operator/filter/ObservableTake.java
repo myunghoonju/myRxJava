@@ -2,8 +2,8 @@ package practice.RxJava.operator.filter;
 
 
 import io.reactivex.rxjava3.core.Observable;
-import practice.RxJava.operator.data.Car;
-import practice.RxJava.operator.data.SampleData;
+import practice.RxJava.data.Car;
+import practice.RxJava.data.SampleData;
 
 import java.util.concurrent.TimeUnit;
 

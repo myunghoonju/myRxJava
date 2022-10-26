@@ -3,7 +3,7 @@ package practice.RxJava.backpressure;
 import io.reactivex.rxjava3.core.Flowable;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 import lombok.extern.slf4j.Slf4j;
-import practice.RxJava.other.MTimeUtil;
+import practice.RxJava.utility.MTimeUtil;
 
 import java.util.concurrent.TimeUnit;
 

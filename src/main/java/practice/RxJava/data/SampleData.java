@@ -1,4 +1,4 @@
-package practice.RxJava.operator.data;
+package practice.RxJava.data;
 
 import io.reactivex.rxjava3.core.Observable;
 

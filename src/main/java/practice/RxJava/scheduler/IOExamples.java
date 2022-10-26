@@ -3,7 +3,7 @@ package practice.RxJava.scheduler;
 import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 import lombok.extern.slf4j.Slf4j;
-import practice.RxJava.operator.data.SampleData;
+import practice.RxJava.data.SampleData;
 
 import java.io.File;
 import java.util.Arrays;

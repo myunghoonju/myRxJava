@@ -1,4 +1,4 @@
-package practice.RxJava.operator.data;
+package practice.RxJava.data;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

@@ -1,7 +1,7 @@
 package practice.RxJava.other;
 
 import io.reactivex.rxjava3.core.Observable;
-import practice.RxJava.operator.data.SampleData;
+import practice.RxJava.data.SampleData;
 
 import java.util.Arrays;
 

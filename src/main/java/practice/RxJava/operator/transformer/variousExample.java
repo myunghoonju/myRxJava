@@ -3,9 +3,9 @@ package practice.RxJava.operator.transformer;
 import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.observables.GroupedObservable;
 import lombok.extern.slf4j.Slf4j;
-import practice.RxJava.operator.data.Car;
-import practice.RxJava.operator.data.CarMaker;
-import practice.RxJava.operator.data.SampleData;
+import practice.RxJava.data.Car;
+import practice.RxJava.data.CarMaker;
+import practice.RxJava.data.SampleData;
 
 import java.util.Arrays;
 import java.util.List;

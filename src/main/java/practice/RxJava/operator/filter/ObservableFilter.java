@@ -1,8 +1,8 @@
 package practice.RxJava.operator.filter;
 
 import io.reactivex.rxjava3.core.Observable;
-import practice.RxJava.operator.data.CarMaker;
-import practice.RxJava.operator.data.SampleData;
+import practice.RxJava.data.CarMaker;
+import practice.RxJava.data.SampleData;
 
 public class ObservableFilter {
 

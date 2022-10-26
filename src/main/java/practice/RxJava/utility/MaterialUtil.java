@@ -1,4 +1,4 @@
-package practice.RxJava.other.utility;
+package practice.RxJava.utility;
 
 import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.schedulers.Schedulers;

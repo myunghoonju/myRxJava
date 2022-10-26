@@ -5,8 +5,8 @@ import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.core.Observer;
 import io.reactivex.rxjava3.disposables.Disposable;
 import lombok.extern.slf4j.Slf4j;
-import practice.RxJava.operator.data.CarMaker;
-import practice.RxJava.operator.data.SampleData;
+import practice.RxJava.data.CarMaker;
+import practice.RxJava.data.SampleData;
 
 import java.util.concurrent.TimeUnit;
 

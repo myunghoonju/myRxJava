@@ -1,4 +1,4 @@
-package practice.RxJava.operator.data;
+package practice.RxJava.data;
 
 public enum CarType {
     SEDAN,

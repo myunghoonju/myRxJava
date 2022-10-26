@@ -2,8 +2,8 @@ package practice.RxJava.operator.conditional;
 
 import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.schedulers.Schedulers;
-import practice.RxJava.operator.data.CarMaker;
-import practice.RxJava.operator.data.SampleData;
+import practice.RxJava.data.CarMaker;
+import practice.RxJava.data.SampleData;
 
 public class SequenceEqualExample {
 
