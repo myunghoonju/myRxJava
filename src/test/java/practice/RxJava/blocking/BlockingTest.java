@@ -1,8 +1,6 @@
 package practice.RxJava.blocking;
 
-import com.jayway.jsonpath.internal.function.numeric.Sum;
 import io.reactivex.rxjava3.core.Observable;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import practice.RxJava.data.Car;
 import practice.RxJava.data.CarMaker;
@@ -11,7 +9,6 @@ import practice.RxJava.data.SampleObservable;
 import java.util.Iterator;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.in;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class BlockingTest {
