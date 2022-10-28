@@ -129,7 +129,7 @@ public class BlockingTest {
         @Test
         public void blockingSubscribe() throws Exception {
             SampleObservable.getSalesOfBranchA()
-                    .blockingSubscribe(SumAll::sumValue);
+                            .blockingSubscribe(SumAll::sumValue);
 
             assertThat(SumAll.value).isEqualTo(326000000);
         }
