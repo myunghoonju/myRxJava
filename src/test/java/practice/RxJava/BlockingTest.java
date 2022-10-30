@@ -1,4 +1,4 @@
-package practice.RxJava.blocking;
+package practice.RxJava;
 
 import io.reactivex.rxjava3.core.Observable;
 import org.junit.jupiter.api.Test;
