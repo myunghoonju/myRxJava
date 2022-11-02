@@ -7,7 +7,6 @@ import org.junit.jupiter.api.Test;
 import practice.RxJava.data.Car;
 import practice.RxJava.data.SampleObservable;
 
-import java.sql.Time;
 import java.util.concurrent.TimeUnit;
 
 import static practice.RxJava.data.CarMaker.HYUNDAE;
@@ -22,8 +21,11 @@ public class AssertTest {
     public void assertEmpty_fail_test() {
         Observable<Car> observable = SampleObservable.getCarStream();
         TestObserver<Car> test = observable.test();
-
-        //test.awaitDone(100L, TimeUnit.MILLISECONDS).assertEmpty();
+        try {
+            test.awaitDone(100L, TimeUnit.MILLISECONDS).assertEmpty();
+        } catch (Throwable error) {
+            log.info(error.getMessage());
+        }
     }
 
     @Test
@@ -75,12 +77,16 @@ public class AssertTest {
 
     @Test
     public void assertResult_fail_test() throws Exception {
-        Observable.interval(200L, TimeUnit.MILLISECONDS)
-                .doOnNext(data -> log.info("doOnNext:: {}", data))
-                .filter(data -> data > 3)
-                .test()
-                .awaitDone(1100L, TimeUnit.MILLISECONDS);
-                //.assertResult(4L); //uncompleted
+        try {
+            Observable.interval(200L, TimeUnit.MILLISECONDS)
+                    .doOnNext(data -> log.info("doOnNext:: {}", data))
+                    .filter(data -> data > 3)
+                    .test()
+                    .awaitDone(1100L, TimeUnit.MILLISECONDS)
+                    .assertResult(4L); //uncompleted
+        } catch (Throwable e) {
+            log.info(e.getMessage());
+        }
     }
 
     @Test
@@ -109,7 +115,6 @@ public class AssertTest {
                 })
                 .test()
                 .awaitDone(1000L, TimeUnit.MILLISECONDS)
-                //.assertError(Throwable.class);
                 .assertError(ArithmeticException.class::isInstance);
     }
 
