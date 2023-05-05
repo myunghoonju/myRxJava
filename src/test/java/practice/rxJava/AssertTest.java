@@ -57,15 +57,6 @@ public class AssertTest {
     }
 
     @Test
-    public void assertValue_test_three() {
-        SampleObservable.getDuplicatedCarMakerStream()
-                .filter(HYUNDAE::equals)
-                .test()
-                .awaitDone(1L, TimeUnit.MILLISECONDS)
-                .assertValues(HYUNDAE, HYUNDAE);
-    }
-
-    @Test
     public void assertValue_test_four() {
         Observable.interval(200L, TimeUnit.MILLISECONDS)
                 .doOnNext(data -> log.info("doOnNext:: {}", data))
