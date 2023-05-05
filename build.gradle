@@ -24,7 +24,9 @@ dependencies {
 	implementation 'org.projectlombok:lombok'
 	implementation 'io.reactivex.rxjava3:rxjava:3.1.5'
 	implementation 'io.netty:netty-all:4.1.92.Final'
-	
+	implementation 'commons-codec:commons-codec:1.15'
+
+
 	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
 	testAnnotationProcessor 'org.projectlombok:lombok'
