@@ -23,6 +23,8 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-rsocket'
 	implementation 'org.projectlombok:lombok'
 	implementation 'io.reactivex.rxjava3:rxjava:3.1.5'
+	implementation 'io.netty:netty-all:4.1.86.Final'
+
 	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
 	testAnnotationProcessor 'org.projectlombok:lombok'
