@@ -1,10 +1,7 @@
 package practice.tcp.netty;
 
-import practice.tcp.netty.sample.model.ReqData;
-
 import java.io.*;
-import java.net.*;
-import java.nio.charset.StandardCharsets;
+import java.net.Socket;
 
 public class SocketClient {
 
@@ -36,7 +33,7 @@ public class SocketClient {
 
     public String sendMessage() {
         try {
-            String s = "02002000001010000200905140954061100000720000011    0026938       B    10810064145031  (주)세틀뱅크        1177730000000010690홍길동              0000000000000                             011  ";
+            String s = "0200 20000010 1000 0200905140954061100000720000011    0026938       B    10810064145031  (주)세틀뱅크        1177730000000010690홍길동              0000000000000                             011  ";
             System.out.println("send length " + s.getBytes().length);
             out.write(s);
             out.flush();

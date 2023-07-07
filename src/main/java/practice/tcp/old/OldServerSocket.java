@@ -1,18 +1,8 @@
 package practice.tcp.old;
 
-import org.apache.commons.codec.binary.Base64;
-import org.slf4j.Logger;
+import lombok.extern.slf4j.Slf4j;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.io.RandomAccessFile;
+import java.io.*;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.sql.Connection;
@@ -20,9 +10,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.Calendar;
 
+@Slf4j
 public class OldServerSocket extends Thread {
 
-    private Logger logger; // 로그처리용
     private Socket recSocket = null;
     private InputStream input = null;
     private InputStreamReader isr = null;
@@ -66,7 +56,7 @@ public class OldServerSocket extends Thread {
             br = new BufferedInputStream(input);
 
         } catch (IOException ioe) {
-            logger.info("error_io (EnDeServerThread.java)");
+            log.info("error_io (EnDeServerThread.java)");
         }
     }
 
@@ -74,15 +64,16 @@ public class OldServerSocket extends Thread {
      * 스레드 실행
      */
     public void run() {
-        logger.info("Thread Start");
+        log.info("Thread Start");
 
         String sendData = ""; // 보낼 메세지
         int rc = 0;
 
+        //deData에 받은 메세지 저장
         rc = receive(); // 클라이언트로부터 데이터를 받은 메소드
 
         if (rc < 0) {
-            logger.info("Socket Read Error("+rc+")");
+            log.info("Socket Read Error("+rc+")");
             CloseSocket();
             return;
         }
@@ -91,7 +82,7 @@ public class OldServerSocket extends Thread {
         send(sendData); // client send..
 
         CloseSocket();
-        logger.info("Thread End\n");
+        log.info("Thread End\n");
     }
 
     /**
@@ -103,8 +94,8 @@ public class OldServerSocket extends Thread {
         InetAddress inet =  recSocket.getInetAddress();
         String ip = String.valueOf(inet);
 
-        if (logger.isInfoEnabled()){
-            logger.info("접속 아이피 : " + ip);
+        if (log.isInfoEnabled()){
+            log.info("접속 아이피 : " + ip);
         }
 
         int bytesRead = 0;
@@ -115,9 +106,9 @@ public class OldServerSocket extends Thread {
 
 
         try {
-            bytesRead = Read(br, bRecvLen, LEN_SIZE);
+            //bytesRead = Read(br, bRecvLen, LEN_SIZE);
             //str = String.valueOf(bRecvLen);
-            str = new String(bRecvLen);
+            str = "02002000001010000200905140954061100000720000011    0026938       B    10810064145031  (주)세틀뱅크        1177730000000010690홍길동              0000000000000                             011  ";
 
             //logger.info("Read = '" + str + "'");
             mlen = Integer.parseInt(str.substring(0, 4)); // 전문길이
@@ -125,16 +116,16 @@ public class OldServerSocket extends Thread {
             byte[] bRecv = new byte[mlen];
 
 
-			/*if (enc.equals("0"))
-				mlen -= LEN_SIZE;*/
+			if (enc.equals("0"))
+				mlen -= LEN_SIZE;
 
-            if ((bytesRead = Read(br, bRecv, mlen)) < 0)
+        /*    if ((bytesRead = Read(br, bRecv, mlen)) < 0)
             {
-                logger.info("Read = '" + bytesRead + "'");
+                log.info("Read = '" + bytesRead + "'");
                 return bytesRead;
-            }
+            }*/
             //str = String.valueOf(bRecv);
-            str = new String(bRecv);
+            //str = new String(bRecv);
 
             byte buffer[] = str.getBytes();
 
@@ -146,9 +137,9 @@ public class OldServerSocket extends Thread {
                 deData = str;
             }
             corpId = deData.substring(4, 12); // 기관코드
-            logger.info("deData(" + mlen + ") = '" + deData + "'");
+            log.info("deData(" + mlen + ") = '" + deData + "'");
         } catch (NumberFormatException ex) {
-            logger.info(ex.getMessage());
+            log.info(ex.getMessage());
             deData = null;
         }
 
@@ -169,7 +160,7 @@ public class OldServerSocket extends Thread {
 
         try {
 
-            while (iLeft > 0) {
+            while (iLeft < 0) {
                 iLen = br.read(bRecv,  len - iLeft, iLeft);
 
                 if (iLen >= 0)
@@ -180,10 +171,10 @@ public class OldServerSocket extends Thread {
                     return -1;
             }
         } catch (IOException ioe) {
-            logger.info("receive error = " + ioe.getMessage());
+            log.info("receive error = " + ioe.getMessage());
         }
 
-        return (len - iLeft);
+        return 0;
     }
 
     /**
@@ -195,7 +186,7 @@ public class OldServerSocket extends Thread {
             if (br != null) br.close();
             recSocket.close();
         } catch (IOException ioe) {
-            logger.info("error_io (EnDeServerThread.java)");
+            log.info("error_io (EnDeServerThread.java)");
         }
     }
 
@@ -216,12 +207,6 @@ public class OldServerSocket extends Thread {
         Connection conn = null;
 
         try {
-            dbcm = new DBConnectionManager();
-            conn = dbcm.getConnection(DB_INFO,DB_URL, DB_ID, DB_PWD );
-
-            if (conn == null || dbcm == null) logger.info("DB SESSION IS NULL...DB접속 실패! ");
-            else logger.info("Connect DB");
-
             int recstrLen = Integer.parseInt(deData.substring(0, 4).trim()); // 전문길이
 
             String orgCd = deData.substring(4,12).trim(); //기관코드
@@ -303,8 +288,9 @@ public class OldServerSocket extends Thread {
                 }
                 String ta_amount_temp = new String(temp);
 
-                if (ta_amount_temp.equals("             "))
+                if (ta_amount_temp.equals("             ")) {
                     ta_amount_temp = "0000000000000";
+                }
 
                 ta_amount = Long.parseLong(ta_amount_temp);
 
@@ -316,7 +302,7 @@ public class OldServerSocket extends Thread {
                 }
                 cmsCd = new String(temp3);
 
-                // iorg_cd
+                // iorg_cd 입금은행코드
                 k = 0;
                 for (int i = 101; i < 104; i++) {
                     temp4[k] = strBytes[i];
@@ -324,7 +310,7 @@ public class OldServerSocket extends Thread {
                 }
                 iorgCd = new String(temp4);
 
-                // media_gb
+                // media_gb 매체구분
                 k = 0;
                 for (int i = 112; i < 114; i++) {
                     temp5[k] = strBytes[i];
@@ -335,10 +321,8 @@ public class OldServerSocket extends Thread {
             }// 파싱 끝  응답전문 생성
 
 
-            /*
-             * logger.info("in db process amount=>" + amount + ",vc=>" +
-             * virtualAccount); logger.info("in db process number=>" + deData);
-             */
+            log.info("in db process amount=>" + amount + ",vc=>" + virtualAccount);
+            log.info("in db process number=>" + deData);
             // 응답전문 생성 시작
             sbf = new StringBuffer();
 
@@ -357,7 +341,7 @@ public class OldServerSocket extends Thread {
                  * ******************************************************
                  */
 
-                logger.info("수취 조회 시작 ");
+                log.info("수취 조회 시작 ");
                 String inp_st = chkCancel(tranDate, tranNumber, virtualAccount,
                         conn, dbcm); // 0;없음, 1:입금, 2:취소, 3:정산(취소불가)
 
@@ -375,7 +359,7 @@ public class OldServerSocket extends Thread {
 
                         inpRet = "0000";
                     }
-                    logger.info("수취 조회 종료 ");
+                    log.info("수취 조회 종료 ");
                 }
                 sbf.append(inpRet);
                 sbf.append(deData.substring(44, 86));
@@ -404,23 +388,23 @@ public class OldServerSocket extends Thread {
                  */
 
                 // 입금 완료된 거래인지 확인
-                logger.info("입금여부 조회 시작 ");
+                log.info("입금여부 조회 시작 ");
                 String inp_st = chkCancel(tranDate, tranNumber, virtualAccount,
                         conn, dbcm); // 0;없음, 1:입금, 2:취소, 3:정산(취소불가)
 
                 if (inp_st.equals("1") || inp_st.equals("3")) { // 입금 또는 정산상태
                     // 입금완료된 거래
                     sbf.append("0000");
-                    logger.info("중복입금...정상응답");
+                    log.info("중복입금...정상응답");
                 } else if (inp_st.equals("2")) { // 취소상태
                     // 취소완료된 거래
                     sbf.append("V785");
-                    logger.info("취소완료된 거래 재입금...오류");
+                    log.info("취소완료된 거래 재입금...오류");
                 } else { // 신규입금
                     /**
                      * 입금거래내역 INSERT
                      */
-                    logger.info("입금처리 시작 ");
+                    log.info("입금처리 시작 ");
                     //매체구분추가
                     boolean result = insAhst(tranDate, tranTime, tranGubun,
                             inputBankCode, virtualAccount, snNm, amount,
@@ -428,10 +412,10 @@ public class OldServerSocket extends Thread {
                             dbcm);
                     if (result == true) {
                         sbf.append("0000");
-                        logger.info("입금처리 완료 ");
+                        log.info("입금처리 완료 ");
                     } else {
                         sbf.append("V141");
-                        logger.info("입금처리 오류");
+                        log.info("입금처리 오류");
                     }
 
                 }
@@ -453,7 +437,7 @@ public class OldServerSocket extends Thread {
                 /**
                  * 입금취소 처리
                  */
-                logger.info("입금 완료 조회 시작");
+                log.info("입금 완료 조회 시작");
                 // 입금 완료된 거래인지 확인
                 String inp_st = chkCancel(tranDate, tranNumber, virtualAccount,
                         conn, dbcm); // 0;없음, 1:입금, 2:취소, 3:정산(취소불가)
@@ -463,20 +447,20 @@ public class OldServerSocket extends Thread {
                             virtualAccount, inputBankCode, amount, conn, dbcm);
                     if (result == true) {
                         sbf.append("0000");
-                        logger.info("취소처리 완료");
+                        log.info("취소처리 완료");
                     } else {
                         sbf.append("V141");
-                        logger.info("취소처리 오류");
+                        log.info("취소처리 오류");
                     }
                 } else if (inp_st.equals("2")) { // 기취소된 거래 - 정상응답
                     sbf.append("0000");
-                    logger.info("기취소된 거래");
+                    log.info("기취소된 거래");
                 } else if (inp_st.equals("3")) { // 이미 업무로직을 타서 취소 불가능한 상태
                     sbf.append("V637");
                     errlog_insert(tranDate, tranNumber, tranTime,
                             inputBankCode, virtualAccount, amount, "V637",
                             conn, dbcm);
-                    logger.info("취소불가 거래");
+                    log.info("취소불가 거래");
                 } else {
 
                     boolean result = insAhst(tranDate, tranTime, tranGubun,
@@ -488,10 +472,10 @@ public class OldServerSocket extends Thread {
                         errlog_insert(tranDate, tranNumber, tranTime,
                                 inputBankCode, virtualAccount, amount, "V601",
                                 conn, dbcm);
-                        logger.info("원거래없음->vacs_ahst 취소 insert");
+                        log.info("원거래없음->vacs_ahst 취소 insert");
                     } else {
                         sbf.append("V141");
-                        logger.info("원거래 없음 -> 취소 insert 오류 ");
+                        log.info("원거래 없음 -> 취소 insert 오류 ");
                     }
                 }
 
@@ -559,7 +543,7 @@ public class OldServerSocket extends Thread {
                         sbf.append(space);
                         sendData = sbf.toString();
                     } else
-                        logger.info("file create Error....");
+                        log.info("file create Error....");
                 } else {
 
                     // pageno -1 해서 client send
@@ -582,7 +566,6 @@ public class OldServerSocket extends Thread {
                 }
             }
         } catch (Exception e) {
-            //logger.info(e);
             e.printStackTrace();
             try {
 
@@ -599,7 +582,7 @@ public class OldServerSocket extends Thread {
                 sbf.append(newTemp);
 
                 sendData = sbf.toString();
-                logger.info("in db process cash update=>false");
+                log.info("in db process cash update=>false");
             } catch (Exception ex) {
             }
         } finally {
@@ -688,7 +671,7 @@ public class OldServerSocket extends Thread {
             return retVal;
 
         } catch (Exception e) {
-            logger.info(e.getMessage());
+            log.info(e.getMessage());
             return null;
         }
 
@@ -872,19 +855,17 @@ public class OldServerSocket extends Thread {
                 }
                 cmsCd = new String(temp9);
 
-                /*
-                 * System.out.println("trIl	=	"+trIl);
-                 * System.out.println("trSi	=	"+trSi);
-                 * System.out.println("bankCd	=	"+bankCd);
-                 * System.out.println("inpAcctNo	=	"+inpAcctNo);
-                 * System.out.println("trNo	=	"+trNo);
-                 * System.out.println("trAmt	=	"+trAmt);
-                 * System.out.println("inpAcctNm	=	"+inpAcctNm);
-                 * System.out.println("handOrgCd	=	"+handOrgCd);
-                 * System.out.println("handSubCd	=	"+handSubCd);
-                 * System.out.println("retRet	=	"+retRet);
-                 * System.out.println("cmsCd	=	"+cmsCd);
-                 */
+                System.out.println("trIl	=	"+trIl);
+                System.out.println("trSi	=	"+trSi);
+                System.out.println("bankCd	=	"+bankCd);
+                System.out.println("inpAcctNo	=	"+inpAcctNo);
+                System.out.println("trNo	=	"+trNo);
+                System.out.println("trAmt	=	"+trAmt);
+                System.out.println("inpAcctNm	=	"+inpAcctNm);
+                System.out.println("handOrgCd	=	"+handOrgCd);
+                System.out.println("handSubCd	=	"+handSubCd);
+                System.out.println("retRet	=	"+retRet);
+                System.out.println("cmsCd	=	"+cmsCd);
 
                 sb.append(trIl + "|");
                 sb.append(trSi + "|");
@@ -909,7 +890,7 @@ public class OldServerSocket extends Thread {
             return 1;
 
         } catch (Exception e) {
-            logger.info(e.getMessage());
+            log.info(e.getMessage());
             return 0;
         }
     }
@@ -938,13 +919,14 @@ public class OldServerSocket extends Thread {
         int seq_no = 0; // 수납횟수
         try {
 
-            String chkSQL = "SELECT ACCT_ST, TRAMT_COND, TRBEGIN_IL, TREND_IL, TRBEGIN_SI, TREND_SI, TR_AMT,TRMC_COND, SEQ_NO, CMF_NM, LST_IL, FST_IL FROM VACS_VACT WHERE ORG_CD = ? AND ACCT_NO = ? AND BANK_CD = ? ";
+            String chkSQL = "SELECT ACCT_ST, TRAMT_COND, TRBEGIN_IL, TREND_IL, TRBEGIN_SI, TREND_SI, TR_AMT,TRMC_COND, SEQ_NO, CMF_NM, LST_IL, FST_IL " +
+                            "FROM VACS_VACT WHERE ORG_CD = ? AND ACCT_NO = ? AND BANK_CD = ? ";
 
-            logger.info("====================================================");
-            logger.info("orgcd[" + corpId + "]" + "virtualAccount["
+            log.info("====================================================");
+            log.info("orgcd[" + corpId + "]" + "virtualAccount["
                     + virtualAccount + "]" + "inputBankCode[" + inputBankCode
                     + "]");
-            logger.info("====================================================");
+            log.info("====================================================");
 
             pstmt = con.prepareStatement(chkSQL);
             pstmt.setString(1, corpId);
@@ -992,7 +974,7 @@ public class OldServerSocket extends Thread {
                 // 계좌상태 확인
                 if (!acct_st.equals("1")) { // 계좌상태 할당 아니면
                     inpRet = "V816";
-                    logger.info("계좌 할당상태 아님 :" + virtualAccount);
+                    log.info("계좌 할당상태 아님 :" + virtualAccount);
                     errlog_insert(tranDate, tranNumber, tranTime,
                             inputBankCode, virtualAccount, trAmt, "V816", con,
                             dbcm);
@@ -1004,7 +986,7 @@ public class OldServerSocket extends Thread {
                     if (tramt_cond.equals("1")) { // 금액 = 실입금액
                         if (tr_amt != trAmt) {
                             inpRet = "V713";
-                            logger.info("거래금액 불일치 :" + virtualAccount);
+                            log.info("거래금액 불일치 :" + virtualAccount);
                             errlog_insert(tranDate, tranNumber, tranTime,
                                     inputBankCode, virtualAccount, trAmt,
                                     "V713", con, dbcm);
@@ -1013,7 +995,7 @@ public class OldServerSocket extends Thread {
                     } else if (tramt_cond.equals("2")) { // 금액 >=실입금액
                         if (tr_amt < trAmt) {
                             inpRet = "V713";
-                            logger.info("거래금액 불일치 :" + virtualAccount);
+                            log.info("거래금액 불일치 :" + virtualAccount);
                             errlog_insert(tranDate, tranNumber, tranTime,
                                     inputBankCode, virtualAccount, trAmt,
                                     "V713", con, dbcm);
@@ -1022,7 +1004,7 @@ public class OldServerSocket extends Thread {
                     } else if (tramt_cond.equals("3")) { // 금액 <= 실입금액
                         if (tr_amt > trAmt) {
                             inpRet = "V713";
-                            logger.info("거래금액 불일치 :" + virtualAccount);
+                            log.info("거래금액 불일치 :" + virtualAccount);
                             errlog_insert(tranDate, tranNumber, tranTime,
                                     inputBankCode, virtualAccount, trAmt,
                                     "V713", con, dbcm);
@@ -1037,7 +1019,7 @@ public class OldServerSocket extends Thread {
                     if (trIlSi.compareTo(trbegin_ilsi) < 0
                             || trIlSi.compareTo(trend_ilsi) > 0) {
                         inpRet = "V682";
-                        logger.info("입금기간 불일치 " + virtualAccount);
+                        log.info("입금기간 불일치 " + virtualAccount);
                         errlog_insert(tranDate, tranNumber, tranTime,
                                 inputBankCode, virtualAccount, trAmt, "V682",
                                 con, dbcm);
@@ -1049,7 +1031,7 @@ public class OldServerSocket extends Thread {
                 if (trmc_cond.equals("0")) {
                     if (seq_no > 0) {
                         inpRet = "V416";
-                        logger.info("불입횟수 초과 " + virtualAccount);
+                        log.info("불입횟수 초과 " + virtualAccount);
                         errlog_insert(tranDate, tranNumber, tranTime,
                                 inputBankCode, virtualAccount, trAmt, "V416",
                                 con, dbcm);
@@ -1058,14 +1040,14 @@ public class OldServerSocket extends Thread {
                 }
             } else { // vacs_vact 테이블에 존재하지 않는 계좌
                 inpRet = "V816";
-                logger.info("존재하지 않는 계좌 :" + virtualAccount);
+                log.info("존재하지 않는 계좌 :" + virtualAccount);
                 errlog_insert(tranDate, tranNumber, tranTime, inputBankCode,
                         virtualAccount, trAmt, "V816", con, dbcm);
                 return inpRet;
             }
 
         } catch (Exception e) {
-            logger.info(e.getMessage());
+            log.info(e.getMessage());
             dbcm.close(rs, pstmt, con);
         } finally {
             dbcm.close(rs, pstmt, null);
@@ -1100,7 +1082,7 @@ public class OldServerSocket extends Thread {
             }
 
         } catch (Exception e) {
-            logger.info("chkCancel:" + e);
+            log.info("chkCancel:" + e);
             dbcm.close(rs, pstmt, con);
             throw e;
         } finally {
@@ -1217,7 +1199,7 @@ public class OldServerSocket extends Thread {
                     String upVact = "";
 
                     if (fst_il.equals("00000000")||fst_il.equals("")){
-                        logger.info("최초 입금거래 일자 세팅");
+                        log.info("최초 입금거래 일자 세팅");
                         upVact = "UPDATE VACS_VACT SET SEQ_NO = SEQ_NO + 1, FST_IL = ?, LST_IL = ? WHERE ORG_CD = ? AND ACCT_NO = ? AND BANK_CD = ?";
                         pstmt = con.prepareStatement(upVact);
                         pstmt.setString(1, curDateString());
@@ -1259,12 +1241,12 @@ public class OldServerSocket extends Thread {
 
 
         } catch (Exception e) {
-            logger.info("insAhst:" + e);
+            log.info("insAhst:" + e);
             dbcm.rollback();
             dbcm.close(null, pstmt, con);
             throw e;
         } finally {
-            logger.info("VACS_AHST[" + row1+"] / VACS_TOTL["+row2+"] / VACS_VACT["+row3+"]");
+            log.info("VACS_AHST[" + row1+"] / VACS_TOTL["+row2+"] / VACS_VACT["+row3+"]");
             dbcm.close(null, pstmt, null);
         }
         return result;
@@ -1342,11 +1324,11 @@ public class OldServerSocket extends Thread {
             }
 
         } catch (Exception e) {
-            logger.info("canAhst:" + e);
+            log.info("canAhst:" + e);
             dbcm.close(null, pstmt, con);
             throw e;
         } finally {
-            logger.info("VACS_AHST[" + row1 +"] / VACS_TOTL["+row2+"] / VACS_VACT["+row3+"]");
+            log.info("VACS_AHST[" + row1 +"] / VACS_TOTL["+row2+"] / VACS_VACT["+row3+"]");
             dbcm.close(null, pstmt, null);
         }
         return result;
@@ -1437,7 +1419,7 @@ public class OldServerSocket extends Thread {
             }
 
         } catch (Exception e) {
-            logger.info("insSTotl:" + e);
+            log.info("insSTotl:" + e);
             result = "";
             dbcm.close(rs, pstmt, con);
             throw e;
@@ -1470,7 +1452,7 @@ public class OldServerSocket extends Thread {
             dbcm.commit();
 
         } catch (Exception e) {
-            logger.info("errlog_insert:" + e);
+            log.info("errlog_insert:" + e);
             dbcm.close(null, pstmt, con);
             throw e;
         } finally {
@@ -1591,7 +1573,7 @@ public class OldServerSocket extends Thread {
     public boolean send(String sendData) {
 
         try {
-            logger.info("sendData:" + sendData);
+            log.info("sendData:" + sendData);
             BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(output));
 
             if (enc.equals("1")) {
@@ -1611,7 +1593,7 @@ public class OldServerSocket extends Thread {
             recSocket.close();
 
         } catch (IOException ioe) {
-            logger.info("send error = " + ioe);
+            log.info("send error = " + ioe);
             return false;
         }
         return true;
