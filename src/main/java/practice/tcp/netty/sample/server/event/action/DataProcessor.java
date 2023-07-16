@@ -9,9 +9,6 @@ import practice.okhttp.okhttp.MockApiService;
 import practice.okhttp.okhttp.RetrofitService;
 import practice.okhttp.okhttp.TestModel;
 import practice.tcp.netty.sample.model.ResData;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 import java.util.HashMap;
 
@@ -19,7 +16,7 @@ import java.util.HashMap;
 public class DataProcessor extends ChannelInboundHandlerAdapter {
 
     @Override
-    public void channelRead(ChannelHandlerContext ctx, Object msg) {
+    public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         String string = (String) msg;
         ResData resData = ResData.builder().anInt(2).build();
         test();
@@ -28,21 +25,11 @@ public class DataProcessor extends ChannelInboundHandlerAdapter {
         System.out.println("DataProcessor channelRead  " + string);
     }
 
-    public void test() {
+    public void test() throws Exception {
         TestModel testModel = TestModel.builder().key("a").val("111").build();
         MockApiService mockApiService = RetrofitService.getCli("http://localhost:8085")
                                                        .create(MockApiService.class);
 
-        mockApiService.mockPost(new HashMap<>(), testModel).enqueue(new Callback<>() {
-            @Override
-            public void onResponse(Call<TestModel> call, Response<TestModel> response) {
-                log.info("onResponse");
-            }
-
-            @Override
-            public void onFailure(Call<TestModel> call, Throwable t) {
-                log.info("onResponse");
-            }
-        });
+        mockApiService.mockPost(new HashMap<>(), testModel).execute();
     }
 }

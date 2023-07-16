@@ -20,7 +20,7 @@ public class RetrofitInterceptor implements Interceptor {
         if(req.body() != null) {
             Buffer buffer = new Buffer();
             req.body().writeTo(buffer);
-            log.debug(req.url() + " request : " + buffer.readUtf8());
+            log.info(req.url() + " request : " + buffer.readUtf8());
         }
 
         return chain.proceed(req);
