@@ -5,8 +5,7 @@ import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
-import io.netty.handler.logging.LogLevel;
-import io.netty.handler.logging.LoggingHandler;
+import io.netty.util.concurrent.Future;
 import practice.tcp.netty.sample.server.event.TestChannelHandler;
 
 public class TestServer {
@@ -19,19 +18,22 @@ public class TestServer {
             ServerBootstrap serverBootstrap = new ServerBootstrap();
             serverBootstrap.group(bossGroup, workerGroup)
                     .channel(NioServerSocketChannel.class)
-                    .handler(new LoggingHandler(LogLevel.INFO))
                     .childHandler(new TestChannelHandler())
-                    //TODO option 확인
-                    .option(ChannelOption.SO_BACKLOG, 5)
+
                     .option(ChannelOption.SO_LINGER, 0) // no wait time
+                    .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 1000)
                     .childOption(ChannelOption.SO_KEEPALIVE, true);
 
-            ChannelFuture sync = serverBootstrap.bind(8080).sync();
+            ChannelFuture sync = serverBootstrap.bind(8090)
+                                                .addListener(new ConnectionListener())
+                                                .sync();
             sync.channel().closeFuture().sync();
 
         } finally {
-            workerGroup.shutdownGracefully();
-            bossGroup.shutdownGracefully();
+            Future<?> workerClose = workerGroup.shutdownGracefully();
+            Future<?> bossClose = bossGroup.shutdownGracefully();
+            workerClose.syncUninterruptibly();
+            bossClose.syncUninterruptibly();
         }
     }
 }

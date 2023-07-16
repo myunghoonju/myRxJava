@@ -20,7 +20,7 @@ public class TestClient {
                            .option(ChannelOption.SO_KEEPALIVE, true)
                            .handler(new TestClientChannelHandler());
 
-            ChannelFuture future = clientBootStrap.connect("localhost", 8080).sync();
+            ChannelFuture future = clientBootStrap.connect("localhost", 8090).sync();
             future.channel().closeFuture().sync();
         } finally {
             worker.shutdownGracefully();
