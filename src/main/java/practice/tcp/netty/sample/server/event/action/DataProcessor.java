@@ -4,6 +4,7 @@ import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
+import io.netty.util.ReferenceCountUtil;
 import lombok.extern.slf4j.Slf4j;
 import practice.okhttp.okhttp.MockApiService;
 import practice.okhttp.okhttp.RetrofitService;
@@ -17,7 +18,14 @@ public class DataProcessor extends ChannelInboundHandlerAdapter {
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-        String string = (String) msg;
+        //String string = (String) msg;
+        String string = null;
+        if (string == null) {
+            System.out.println("channelRead release");
+            ReferenceCountUtil.release(msg);
+            return;
+        }
+
         ResData resData = ResData.builder().anInt(2).build();
         test();
         ChannelFuture future = ctx.writeAndFlush(resData);
