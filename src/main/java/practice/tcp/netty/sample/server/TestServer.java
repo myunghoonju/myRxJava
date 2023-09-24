@@ -5,6 +5,7 @@ import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
+import io.netty.util.ResourceLeakDetector;
 import io.netty.util.concurrent.Future;
 import practice.tcp.netty.sample.server.event.TestChannelHandler;
 
@@ -14,7 +15,8 @@ public class TestServer {
         NioEventLoopGroup bossGroup = new NioEventLoopGroup(1);
         NioEventLoopGroup workerGroup = new NioEventLoopGroup(1);
         try {
-            System.out.println("SERVER RUNNING");
+            ResourceLeakDetector.Level level = ResourceLeakDetector.getLevel();
+            System.out.println("SERVER RUNNING, detection level " + level);
             ServerBootstrap serverBootstrap = new ServerBootstrap();
             serverBootstrap.group(bossGroup, workerGroup)
                     .channel(NioServerSocketChannel.class)

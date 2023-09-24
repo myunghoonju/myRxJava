@@ -6,7 +6,6 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
 @Service
-@RequiredArgsConstructor
 public class EmailSender {
 
     public static final String[] MAILING_LIST = {"myunghoonju@naver.com"};
@@ -14,9 +13,13 @@ public class EmailSender {
 
     private final JavaMailSender javaMailSender;
 
+    public EmailSender(JavaMailSender javaMailSender) {
+        this.javaMailSender = javaMailSender;
+    }
+
     public void mailSend() {
         SimpleMailMessage textMsg = new SimpleMailMessage();
-        
+
         textMsg.setFrom("myunghoonju@gmail.com");
         textMsg.setTo(MAILING_LIST);
         textMsg.setCc(MAILING_CC_LIST);
