@@ -1,5 +1,8 @@
 package practice.okhttp.okhttp;
 
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -17,6 +20,16 @@ public class TestModel {
     public TestModel(String key, String val) {
         this.key = key;
         this.val = val;
+    }
+
+    public static TestModel of(CompletableFuture<TestModel> m) {
+        try {
+            return TestModel.builder().key(m.get().key).val(m.get().val).build();
+        } catch (Exception e) {
+
+        }
+
+        return TestModel.builder().build();
     }
 
 }

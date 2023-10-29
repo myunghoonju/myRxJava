@@ -9,17 +9,19 @@ import java.util.concurrent.TimeUnit;
 public class CombineTest {
 
     public static void main(String[] args) throws Exception {
-        combineLatestTest();
+        mergeTest();
     }
 
     static void mergeTest() throws Exception {
         Observable<Long> obs1 = Observable.interval(200L, TimeUnit.MILLISECONDS)
                 .take(5);
-        Observable<Long> obs2 = Observable.interval(400L, TimeUnit.MILLISECONDS)
+        Observable<Long> obs2 = Observable.interval(200L, TimeUnit.MILLISECONDS)
+                .take(5);
+        Observable<Long> obs3 = Observable.interval(400L, TimeUnit.MILLISECONDS)
                 .take(5)
                 .map(number -> number + 1000);
 
-        Observable.merge(obs1, obs2)
+        Observable.merge(obs1, obs2, obs3)
                 .subscribe(data -> log.info("data {}", data));
 
         Thread.sleep(4000);
