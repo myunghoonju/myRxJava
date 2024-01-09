@@ -4,7 +4,7 @@ import io.reactivex.rxjava3.core.Observable;
 
 import java.util.concurrent.TimeUnit;
 
-public class TimeOutUtil {
+public class Time {
 
     public static void main(String[] args) throws Exception {
         timeOutTwo();
@@ -39,5 +39,13 @@ public class TimeOutUtil {
                 .subscribe(
                         integerTimed -> System.out.println("time:: " + integerTimed.time() + " data:: " + integerTimed.value())
                 );
+    }
+
+    public static void sleep(long milliseconds){
+        try {
+            Thread.sleep(milliseconds);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 }
