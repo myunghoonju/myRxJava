@@ -28,10 +28,8 @@ public class AnyOfExample {
             return 20;
         });
         CompletableFuture<Object> any = CompletableFuture.anyOf(second, first);
+        Integer result = any.thenApply(fastest -> (Integer) fastest * 2).join();// wait until the fastest task finished
 
-        any.thenAccept(fastest -> {
-            Integer fastest1 = (Integer) fastest;
-            System.err.println(fastest1);
-        }).join(); // wait until the fastest task finished
+        System.err.println("expected result: 40, actual -> " + result);
     }
 }
