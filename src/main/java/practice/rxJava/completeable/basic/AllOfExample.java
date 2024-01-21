@@ -5,7 +5,7 @@ import java.util.concurrent.CompletableFuture;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class AnyOfExample {
+public class AllOfExample {
 
     public static void main(String[] args) {
         CompletableFuture<Integer> first = CompletableFuture.supplyAsync(() -> 3 / 0) // throws error
@@ -27,12 +27,16 @@ public class AnyOfExample {
                                                                                  return 20;
                                                                                 });
 
-        CompletableFuture<Object> any = CompletableFuture.anyOf(first, second);
-        Integer result = any.thenApply(fastest -> {
-            int i = (Integer) fastest;
-            return i == 0 ? 1 : i * 2;
-        }).join();// wait until the fastest task finished, unchecked exception related, so no need to wrap it with try-catch
+        CompletableFuture<Void> voidCf = CompletableFuture.allOf(first, second);
+        CompletableFuture<Integer> finalCf = voidCf.thenApply(v -> {
+            Integer join = first.join();
+            Integer join2 = second.join();
 
-        System.err.println("expected result: 1, actual -> " + result);
+            return 3 + join + join2;
+        });
+
+        Integer join = finalCf.join();
+
+        System.err.println(join);
     }
 }
