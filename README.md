@@ -69,3 +69,10 @@
     - etc...,
     - 구현체
       - rxJava, reactor, java 9's flow api, etc...,
+- 리액터 용어
+  - publisher
+  - subscriber
+  - emit
+  - sequence
+    - publisher가 emit하는 데이터의 연속적인 흐름
+  - subscribe <-> dispose
