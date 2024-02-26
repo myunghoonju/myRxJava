@@ -50,3 +50,22 @@
   - 슬립 중에 인터럽트 발생 시 현재 스레드는 대기에서 해제되고 실행상태로 전환 및 예외처리
   - 스레드 수면 시간은 OS 스케줄러 및 시스템 기능에 따라 제한되기 때문에 정확성이 보장되지 않으며  
     시스템의 부하가 많고 적음에 따라 지정한 수면 시간과 차이 발생 가능  
+
+#### Feb 26th
+- 리액티브 시스템 설계원칙
+  - 응답성(responsive)
+  - 회복성(resilient)
+  - 탄력성(elastic)
+  - 메시지 기반(message driven)  
+- 리액티브 프로그래밍
+  - 데이터 소스에 변경이 있을때마다 데이터 전파
+  - 선언형 프로그래밍 패러다임
+    - 함수형 프로그래밍 기법
+  - 리액티브 스트림즈
+    - publisher
+    - subscriber
+    - subscription
+    - processor
+    - etc...,
+    - 구현체
+      - rxJava, reactor, java 9's flow api, etc...,
