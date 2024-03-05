@@ -3,7 +3,7 @@ package practice.basic;
 public class Join {
 
     public static void main(String[] args) {
-        multiThreadTwo();
+        interrupt();
     }
 
     private static void multiThreadOne() {
@@ -61,5 +61,44 @@ public class Join {
         }
 
         System.out.println("main restart");
+    }
+
+    private static void interrupt() {
+        Thread main = Thread.currentThread();
+
+        Thread longRunning = new Thread(() -> {
+            try {
+                for (int i = 0; i < 10; i++) {
+                    System.out.println("Thread 1 running");
+                    Thread.sleep(1000);
+                }
+            } catch (InterruptedException e) {
+                System.out.println("longRunning interrupted");
+                main.interrupt();
+            }
+        });
+
+        longRunning.start();
+
+        Thread interrupted = new Thread(() -> {
+            try {
+                System.out.println("after 3sec this will interrupt longRunning thread");
+                Thread.sleep(3000);
+                longRunning.interrupt();
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        });
+
+        interrupted.start();
+
+        try {
+            System.out.println("main is waiting");
+            longRunning.join();
+            System.out.println("main competed");
+        } catch (InterruptedException e) {
+            System.out.println("main interrupted");
+            throw new RuntimeException(e);
+        }
     }
 }
